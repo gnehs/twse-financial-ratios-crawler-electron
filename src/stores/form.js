@@ -7,12 +7,16 @@ export const useFormStore = defineStore('form', () => {
   const targetList = ref([])
   const targetCatgory = ref(null)
   const targetCatgoryList = ref([])
+  const recommendCategoryList = ref([])
+  const fileLink = ref(null)
   return {
     useCommonEra,
     stockList,
     period,
     targetList,
     targetCatgory,
-    targetCatgoryList
+    targetCatgoryList,
+    recommendCategoryList,
+    fileLink
   }
 })

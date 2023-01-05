@@ -29,9 +29,12 @@
     "vue": "^3.2.45"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "cheerio-tableparser": "^1.0.1",
     "node-fetch": "^3.3.0",
     "pinia": "^2.0.28",
     "sass": "^1.57.1",
-    "vuetify": "^3.0.7"
+    "vuetify": "^3.0.7",
+    "xlsx": "^0.18.5"
   }
 }
