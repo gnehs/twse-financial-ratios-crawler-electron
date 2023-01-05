@@ -1,7 +1,15 @@
 <script setup>
 import StepsWrapper from './components/StepsWrapper.vue'
 import { ref } from 'vue'
+import { ipcRenderer } from 'electron';
 const infoDialog = ref(false)
+const version = ref('0.0.0')
+ipcRenderer.on('main-process-message', (_event, args) => {
+  console.log('[Receive Main-process message]:', args);
+  if (args[0] == 'version') {
+    version.value = args[1]
+  }
+});
 </script>
 
 <template>
@@ -17,7 +25,12 @@ const infoDialog = ref(false)
     </v-main>
     <v-dialog v-model="infoDialog" max-width="512px">
       <v-card>
-        <v-card-title>證交所財務比率擷取工具</v-card-title>
+
+        <v-card-item>
+          <v-card-title>證交所財務比率擷取工具</v-card-title>
+          <v-card-subtitle>v{{ version }}</v-card-subtitle>
+        </v-card-item>
+
         <v-card-text>
           透過指定的股票代號清單自動抓取財務比率資訊，並自動計算平均
         </v-card-text>

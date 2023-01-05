@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import "./style.sass"
 import App from './App.vue'
-import './samples/node-api'
 
 // Vuetify
 import 'vuetify/styles'
