@@ -102,8 +102,8 @@ async function getResult(code, name) {
   }, {})
   return res
 }
+
 function accDiv(arg1, arg2) {
-  // no with
   let t1 = 0, t2 = 0, r1, r2;
   try {
     t1 = arg1.toString().split('.')[1].length
@@ -123,15 +123,18 @@ function add(num1, num2) {
   const baseNum = Math.pow(10, Math.max(num1Digits, num2Digits));
   return (num1 * baseNum + num2 * baseNum) / baseNum;
 }
+
 async function capture() {
   for (let { name, code } of captureList.value) {
     let done = false
-    while (!done) {
+    let retryCount = 0
+    while (!done && retryCount < 3) {
       try {
         results.value[code] = await getResult(code, name)
         done = true
       } catch (e) {
         log(`擷取失敗，正在重試⋯`)
+        retryCount++
       }
     }
   }
@@ -205,6 +208,12 @@ async function capture() {
       }
       result.push(row)
     }
+    let row = [`產業平均`]
+    for (let year of years) {
+      row.push(parseFloat(average[year][rate]))
+    }
+    result.push(row)
+    result.push([])
   }
   let sheet = XLSX.utils.aoa_to_sheet(result);
   XLSX.utils.book_append_sheet(workbook, sheet, '圖表資料');
