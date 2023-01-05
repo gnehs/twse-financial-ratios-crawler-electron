@@ -27,5 +27,11 @@
     "vite-plugin-electron": "^0.11.1",
     "vite-plugin-electron-renderer": "^0.11.3",
     "vue": "^3.2.45"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.0",
+    "pinia": "^2.0.28",
+    "sass": "^1.57.1",
+    "vuetify": "^3.0.7"
   }
 }

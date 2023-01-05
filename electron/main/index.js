@@ -37,7 +37,7 @@ const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'Main window',
+    title: '證交所財務比率擷取工具',
     icon: join(process.env.PUBLIC, 'favicon.ico'),
     autoHideMenuBar: true,
     webPreferences: {
