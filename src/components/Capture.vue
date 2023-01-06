@@ -19,17 +19,22 @@ const {
   targetCatgory,
   targetCatgoryList
 } = storeToRefs(formStore)
-const status = ref(['開始擷取'])
+const status = ref(['正在擷取，請勿關閉視窗'])
 const delay = s => new Promise(resolve => setTimeout(resolve, s * 1000))
 const captureList = ref([...new Set([...targetList.value, ...targetCatgoryList.value])])
 const results = ref({})
 const doneCount = ref(0)
-const progress = computed(() => doneCount.value / (captureList.value.length * Math.ceil(period.value / 3)) * 100)
+const errorMessage = ref(null)
+const progress = computed(() => (doneCount.value / (captureList.value.length * Math.ceil(period.value / 3) * 5 * 10) * 100).toFixed(2))
 function parseYear(year) {
   return parseInt(year.toString().replace('年度', '')) + (useCommonEra.value ? 1911 : 0)
 }
 async function fetchFinancialReport(code, year) {
-  await delay(5)
+  for (let i = 0; i < 50; i++) {
+    await delay(0.1)
+
+    doneCount.value++
+  }
   const url = 'https://mops.twse.com.tw/mops/web/ajax_t05st22'
   const params = {
     encodeURIComponent: 1,
@@ -55,6 +60,7 @@ async function fetchFinancialReport(code, year) {
     },
     body: urlencodedParams
   }).then(res => res.text())
+  if (data.includes(`資料庫中查無需求資料`)) return {}
   let $ = cheerio.load(data)
   cheerioTableparser($)
   let table = $('table[style]').parsetable(true, true, true)
@@ -83,14 +89,12 @@ function log(text) {
 }
 async function getResult(code, name) {
   let res = await fetchFinancialReport(code)
-  doneCount.value++
   for (let i = 0; i < (Math.ceil(period.value / 3) - 1); i++) {
     let year = Object.keys(res)[0]
     if (useCommonEra.value) year -= 1911
     year -= 1
     let res2 = await fetchFinancialReport(code, year)
     res = { ...res2, ...res }
-    doneCount.value++
   }
   res = Object.entries(res).slice(period.value * -1).reduce((acc, [year, value]) => {
     acc[year] = value
@@ -132,120 +136,154 @@ async function capture() {
       } catch (e) {
         log(`擷取 ${code} ${name} 失敗，正在重試⋯`)
         retryCount++
+        doneCount.value -= 50
       }
     }
   }
 
-  log(`正在計算平均值⋯`)
-  let average = {}
-  for (let { code } of captureList.value) {
-    for (let year in results.value[code]) {
-      if (!average[year]) average[year] = {}
-      for (let key in results.value[code][year]) {
-        if (!average[year][key]) average[year][key] = []
-        if (results.value[code][year][key] != 'NA') average[year][key].push(results.value[code][year][key])
+  try {
+    log(`正在計算平均值⋯`)
+    let average = {}
+    for (let { code } of captureList.value) {
+      for (let year in results.value[code]) {
+        if (!average[year]) average[year] = {}
+        for (let key in results.value[code][year]) {
+          if (!average[year][key]) average[year][key] = []
+          if (results.value[code][year][key] != 'NA') average[year][key].push(results.value[code][year][key])
+        }
       }
     }
-  }
-  for (let year in average) {
-    for (let key in average[year]) {
-      let len = average[year][key].length
-      let sum = 0
-      let count = 0
-      if (len) {
-        average[year][key].map(x => parseFloat(x)).forEach(val => {
-          sum = add(sum, val)
-          count++
-        })
-        average[year][key] = accDiv(sum, count).toFixed(2)
-      } else {
-        average[year][key] = 'NA'
+    for (let year in average) {
+      for (let key in average[year]) {
+        let len = average[year][key].length
+        let sum = 0
+        let count = 0
+        if (len) {
+          average[year][key].map(x => parseFloat(x)).forEach(val => {
+            sum = add(sum, val)
+            count++
+          })
+          average[year][key] = accDiv(sum, count).toFixed(2)
+        } else {
+          average[year][key] = 'NA'
+        }
       }
     }
-  }
-  // create excel
-  let workbook = XLSX.utils.book_new();
-  // 適用於圖表的資料
-  let ratesHeader = Object.keys(Object.values(Object.values(results.value)[0])[0])
-  let years = Object.keys(Object.values(results.value)[0])
-  let result = []
-  for (let rate of ratesHeader) {
-    result.push([rate])
-    result.push([`年度`, ...years])
-    for (let { code, name } of targetList.value) {
-      let row = [`${code} ${name}`]
+
+    // create excel
+    let workbook = XLSX.utils.book_new();
+    // 適用於圖表的資料
+    let ratesHeader = Object.keys(Object.values(Object.values(results.value)[0])[0])
+    let years = Object.keys(Object.values(results.value)[0])
+    let result = []
+    for (let rate of ratesHeader) {
+      result.push([rate])
+      result.push([`年度`, ...years])
+      for (let { code, name } of targetList.value) {
+        let row = [`${code} ${name}`]
+        for (let year of years) {
+          try {
+            row.push(parseFloat(results.value[code][year][rate]))
+          } catch (e) {
+            row.push('NA')
+          }
+        }
+        result.push(row)
+      }
+      let row = [`產業平均`]
       for (let year of years) {
         try {
-          row.push(parseFloat(results.value[code][year][rate]))
+          row.push(parseFloat(average[year][rate]))
         } catch (e) {
           row.push('NA')
         }
       }
       result.push(row)
+      result.push([])
     }
-    let row = [`產業平均`]
-    for (let year of years) {
-      try {
-        row.push(parseFloat(average[year][rate]))
-      } catch (e) {
-        row.push('NA')
-      }
-    }
-    result.push(row)
-    result.push([])
-  }
-  let sheet = XLSX.utils.aoa_to_sheet(result);
-  XLSX.utils.book_append_sheet(workbook, sheet, '圖表資料');
-  // 股票與平均
-  function jsonToSheet(json, code) {
-    let headers = Object.keys(json[Object.keys(json)[0]])
-    let data = []
-    let row = ['年份']
-    for (let year in json) {
-      row.push(year)
-    }
-    data.push(row)
-    for (let key of headers) {
-      row = [key]
+    let sheet = XLSX.utils.aoa_to_sheet(result);
+    XLSX.utils.book_append_sheet(workbook, sheet, '圖表資料');
+    // 股票與平均
+    function jsonToSheet(json, code) {
+      if (!json) return
+      let headers = Object.keys(json[Object.keys(json)[0]])
+      let data = []
+      let row = ['年份']
       for (let year in json) {
-        row.push(parseFloat(json[year][key]))
+        row.push(year)
       }
       data.push(row)
+      for (let key of headers) {
+        row = [key]
+        for (let year in json) {
+          if (json[year][key] !== 'NA')
+            row.push(parseFloat(json[year][key]))
+          else
+            row.push(json[year][key])
+        }
+        data.push(row)
+      }
+
+      let sheet = XLSX.utils.aoa_to_sheet(data);
+      XLSX.utils.book_append_sheet(workbook, sheet, code.toString());
     }
 
-    let sheet = XLSX.utils.aoa_to_sheet(data);
-    XLSX.utils.book_append_sheet(workbook, sheet, code.toString());
-  }
+    jsonToSheet(average, '平均')
 
-  jsonToSheet(average, '平均')
+    for (let { code, name } of captureList.value) {
+      jsonToSheet(results.value[code], `${code} ${name}`)
+    }
 
-  for (let { code, name } of captureList.value) {
-    jsonToSheet(results.value[code], `${code} ${name}`)
+    function s2ab(s) {
+      var buf = new ArrayBuffer(s.length);
+      var view = new Uint8Array(buf);
+      for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+      return buf;
+    }
+    fileLink.value = URL.createObjectURL(new Blob([s2ab(XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' }))], { type: "application/octet-stream" }))
+    step.value = 'Done'
+  } catch (e) {
+    errorMessage.value = e.toString()
   }
-
-  function s2ab(s) {
-    var buf = new ArrayBuffer(s.length);
-    var view = new Uint8Array(buf);
-    for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-    return buf;
-  }
-  fileLink.value = URL.createObjectURL(new Blob([s2ab(XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' }))], { type: "application/octet-stream" }))
-  step.value = 'Done'
 }
 onMounted(() => {
   capture()
 })
 </script>
 <template>
-  <div class="text-center" style="width: calc(100vw - 32px);max-width: 512px;">
-    <div>正在擷取，請勿關閉視窗</div>
-    <v-progress-linear color="primary" :model-value="progress" class="my-2" />
-    <div class="status" v-for="item of status">{{ item }}</div>
+  <div style="width: calc(100vw - 32px);max-width: 512px;">
+    <v-alert type="error" title="發生了錯誤！" v-if="errorMessage">
+      很抱歉發生了錯誤，請重新再試一次，若您持續發生此錯誤請提供下列錯誤資訊給開發者
+      <br />
+      period: <br />{{ period }}
+      targetList: <br />{{ targetList }}
+      captureList: <br />{{ captureList }}
+      errorMessage: <br /> {{ errorMessage }}
+    </v-alert>
+    <div class="text-center" v-else>
+      <div class="progress">{{ progress }}%</div>
+      <v-progress-linear color="primary" :model-value="progress" class="my-2" />
+      <div style="height: 80px">
+        <v-slide-y-transition
+          class="py-0"
+          group
+          tag="div">
+          <div class="status" v-for="item of status">{{ item }}</div>
+        </v-slide-y-transition>
+      </div>
+    </div>
   </div>
 </template>
 <style lang="sass" scoped>
+.progress
+  font-size: 36px
+  font-weight: 400
+  text-align: right
 .status
   font-size: 12px
-  color: #999
   margin-top: 4px
+  text-align: left
+  color: #333
+  &+.status
+    color: #999
 </style>
