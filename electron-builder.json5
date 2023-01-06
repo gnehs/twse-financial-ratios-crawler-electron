@@ -8,14 +8,14 @@
   "asar": true,
   "icon": "public/icon.png",
   "directories": {
-    "output": "release/${version}"
+    "output": "release"
   },
   "files": [
     "dist-electron",
     "dist"
   ],
   "mac": {
-    "artifactName": "${productName}_${version}.${ext}",
+    "artifactName": "twse-ratios-crawler_${version}.${ext}",
     "target": [
       "dmg"
     ]
@@ -30,7 +30,7 @@
         ]
       }
     ],
-    "artifactName": "${productName}_${version}.${ext}"
+    "artifactName": "twse-ratios-crawler_${version}.${ext}"
   },
   "nsis": {
     "oneClick": false,
