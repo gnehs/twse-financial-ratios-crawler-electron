@@ -36,7 +36,7 @@ ipcRenderer.on('main-process-message', (_event, args) => {
           <br />
           <br />
           <div class="text-h6">使用教學</div>
-          <video controls muted autoplay loop style="width: 100%;border-radius: 4px;">
+          <video controls muted autoplay loop style="width: 100%;border-radius: 16px;">
             <source src="/preview.mp4" type="video/mp4">
           </video>
         </v-card-text>
