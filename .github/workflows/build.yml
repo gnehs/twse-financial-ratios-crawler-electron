@@ -55,6 +55,9 @@ jobs:
           files: |
             release/*.dmg
             release/*.exe
-          generate_release_notes: true
+          body: |
+            ### 下載
+            - [Windows](https://github.com/gnehs/twse-financial-ratios-crawler-electron/releases/download/${{ github.ref_name }}/twse-ratios-crawler_${{ github.ref_name }}.exe)
+            - [macOS](https://github.com/gnehs/twse-financial-ratios-crawler-electron/releases/download/${{ github.ref_name }}/twse-ratios-crawler_${{ github.ref_name }}.dmg)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
