@@ -19,7 +19,7 @@ const {
   targetCatgory,
   targetCatgoryList
 } = storeToRefs(formStore)
-const status = ref(['正在擷取，請勿關閉視窗'])
+const status = ref([{ time: new Date(), text: '正在擷取，請勿關閉視窗' }])
 const delay = s => new Promise(resolve => setTimeout(resolve, s * 1000))
 const captureList = ref([...new Set([...targetList.value, ...targetCatgoryList.value])])
 const results = ref({})
@@ -84,7 +84,7 @@ async function fetchFinancialReport(code, year) {
 }
 function log(text) {
   console.log(text)
-  let status_value = [text, ...status.value]
+  let status_value = [{ time: new Date(), text }, ...status.value]
   status.value = status_value.slice(0, 5)
 }
 async function getResult(code, name) {
@@ -268,7 +268,14 @@ onMounted(() => {
           class="py-0"
           group
           tag="div">
-          <div class="status" v-for="item of status">{{ item }}</div>
+          <div class="status" v-for="(item, i) of status" :key="item.time.toLocaleTimeString()">
+            <div class="text">
+              {{ item.text }}
+            </div>
+            <div class="time">
+              {{ item.time.toLocaleTimeString("zh-TW", { hour12: false }) }}
+            </div>
+          </div>
         </v-slide-y-transition>
       </div>
     </div>
@@ -284,6 +291,10 @@ onMounted(() => {
   margin-top: 4px
   text-align: left
   color: #333
+  display: grid
+  grid-template-columns: 3fr 1fr
+  .time
+    text-align: right
   &+.status
     color: #999
 </style>
