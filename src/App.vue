@@ -15,7 +15,7 @@ ipcRenderer.on('main-process-message', (_event, args) => {
 <template>
   <v-app>
     <v-app-bar>
-      <v-app-bar-title>證交所財務比率擷取工具</v-app-bar-title>
+      <v-app-bar-title>財務比率擷取工具</v-app-bar-title>
       <template v-slot:append>
         <v-btn icon="mdi-information-outline" @click="infoDialog = true"></v-btn>
       </template>
@@ -27,7 +27,7 @@ ipcRenderer.on('main-process-message', (_event, args) => {
       <v-card>
 
         <v-card-item>
-          <v-card-title>證交所財務比率擷取工具</v-card-title>
+          <v-card-title>財務比率擷取工具</v-card-title>
           <v-card-subtitle>v{{ version }}</v-card-subtitle>
         </v-card-item>
 
