@@ -1,5 +1,5 @@
 # 證交所財務比率擷取工具
-透過指定的股票代號清單自動抓取財務比率資訊，並自動計算平均
+透過指定的股票代號清單自動抓取財務比率資訊，計算平均並將結果匯出成 Excel 檔案，也能自動產出提供圖表，方便使用者分析財務比率。
 ## 使用教學
 ![](https://github.com/gnehs/twse-financial-ratios-crawler-electron/blob/main/public/preview.gif?raw=true)
 ## 下載
