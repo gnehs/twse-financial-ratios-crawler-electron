@@ -33,6 +33,12 @@ ipcRenderer.on('main-process-message', (_event, args) => {
 
         <v-card-text>
           透過指定的股票代號清單自動抓取財務比率資訊，並自動計算平均
+          <br />
+          <br />
+          <div class="text-h6">使用教學</div>
+          <video controls muted autoplay loop style="width: 100%;border-radius: 4px;">
+            <source src="/preview.mp4" type="video/mp4">
+          </video>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
