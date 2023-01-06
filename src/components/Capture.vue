@@ -12,6 +12,7 @@ const formStore = useFormStore()
 const { step } = storeToRefs(stepStore)
 const {
   useCommonEra,
+  results,
   stockList,
   fileLink,
   period,
@@ -22,7 +23,6 @@ const {
 const status = ref([{ time: new Date(), text: '正在擷取，請勿關閉視窗' }])
 const delay = s => new Promise(resolve => setTimeout(resolve, s * 1000))
 const captureList = ref([...new Set([...targetList.value, ...targetCatgoryList.value])])
-const results = ref({})
 const doneCount = ref(0)
 const errorMessage = ref(null)
 const progress = computed(() => (doneCount.value / (captureList.value.length * Math.ceil(period.value / 3) * 5 * 10) * 100).toFixed(2))
@@ -248,9 +248,11 @@ async function capture() {
       for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
       return buf;
     }
+    results.value['平均'] = average
     fileLink.value = URL.createObjectURL(new Blob([s2ab(XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' }))], { type: "application/octet-stream" }))
     step.value = 'Done'
   } catch (e) {
+    console.error(e)
     errorMessage.value = e.toString()
   }
 }
@@ -271,7 +273,7 @@ onMounted(() => {
     <div v-else>
       <div class="d-flex justify-space-between align-end">
         <div class="progress">{{ progress }}%</div>
-        <div class="text-right text-caption">剩餘時間<br />{{ remainingTime }}</div>
+        <div class="text-right text-caption">剩餘時間<br />{{ remainingTime|| '即將完成' }}</div>
       </div>
       <v-progress-linear color="primary" :model-value="progress" class="my-2" />
       <div style="height: 80px">

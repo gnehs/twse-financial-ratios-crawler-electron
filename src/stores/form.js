@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 export const useFormStore = defineStore('form', () => {
+  const results = ref({})
   const useCommonEra = ref(true)
   const stockList = ref(null)
   const period = ref(3)
@@ -10,6 +11,7 @@ export const useFormStore = defineStore('form', () => {
   const recommendCategoryList = ref([])
   const fileLink = ref(null)
   return {
+    results,
     useCommonEra,
     stockList,
     period,
