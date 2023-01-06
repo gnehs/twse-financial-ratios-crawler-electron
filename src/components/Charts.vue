@@ -33,8 +33,11 @@ const charts = ref(
               csv: {
                 filename: `財務比率_${rate}_${new Date().toLocaleString()}`,
               },
-            }
-          }
+            },
+          },
+          animations: {
+            enabled: false
+          },
         },
         xaxis: {
           categories: Object.keys(results.value['平均'])
