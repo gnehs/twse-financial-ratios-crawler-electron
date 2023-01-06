@@ -298,7 +298,6 @@ errorMessage:
 <style lang="sass" scoped>
 .progress
   font-size: 36px
-  font-weight: 400
   text-align: right
 .status
   font-size: 12px
