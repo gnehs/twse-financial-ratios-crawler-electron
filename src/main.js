@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import VueApexCharts from "vue3-apexcharts";
 import "./style.sass"
 import App from './App.vue'
 
@@ -19,6 +20,7 @@ const pinia = createPinia()
 createApp(App)
   .use(vuetify)
   .use(pinia)
+  .use(VueApexCharts)
   .mount('#app')
   .$nextTick(() => {
     postMessage({ payload: 'removeLoading' }, '*')

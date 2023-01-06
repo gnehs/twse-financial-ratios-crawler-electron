@@ -265,10 +265,16 @@ onMounted(() => {
     <v-alert type="error" title="發生了錯誤！" v-if="errorMessage">
       很抱歉發生了錯誤，請重新再試一次，若您持續發生此錯誤請提供下列錯誤資訊給開發者
       <br />
-      period: <br />{{ period }}
-      targetList: <br />{{ targetList }}
-      captureList: <br />{{ captureList }}
-      errorMessage: <br /> {{ errorMessage }}
+      <pre>
+period:
+{{ period }}
+targetList:
+{{ targetList }}
+captureList:
+{{ captureList }}
+errorMessage:
+{{ errorMessage }}
+      </pre>
     </v-alert>
     <div v-else>
       <div class="d-flex justify-space-between align-end">
