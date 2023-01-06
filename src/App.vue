@@ -32,7 +32,7 @@ ipcRenderer.on('main-process-message', (_event, args) => {
         </v-card-item>
 
         <v-card-text>
-          透過指定的股票代號清單自動抓取財務比率資訊，並自動計算平均
+          透過指定的股票代號清單自動抓取財務比率資訊，計算平均並將結果匯出成 Excel 檔案，也能自動產出提供圖表，方便使用者分析財務比率。
           <br />
           <br />
           <div class="text-h6">使用教學</div>

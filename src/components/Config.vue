@@ -71,7 +71,7 @@ function next() {
 
   <v-card width="512" class="my-4">
     <template v-slot:title>
-      股票與產業設定
+      選擇目標股票與產業
     </template>
 
     <template v-slot:text>

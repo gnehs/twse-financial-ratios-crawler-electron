@@ -276,28 +276,23 @@ errorMessage:
 {{ errorMessage }}
       </pre>
     </v-alert>
-    <div v-else>
+    <v-card class="pa-4" v-else>
       <div class="d-flex justify-space-between align-end">
         <div class="progress">{{ progress }}%</div>
         <div class="text-right text-caption">剩餘時間<br />{{ remainingTime|| '即將完成' }}</div>
       </div>
       <v-progress-linear color="primary" :model-value="progress" class="my-2" />
-      <div style="height: 80px">
-        <v-slide-y-transition
-          class="py-0"
-          group
-          tag="div">
-          <div class="status" v-for="(item, i) of status" :key="item.time.toLocaleTimeString()">
-            <div class="text">
-              {{ item.text }}
-            </div>
-            <div class="time">
-              {{ item.time.toLocaleTimeString("zh-TW", { hour12: false }) }}
-            </div>
+      <div style="height: 110px">
+        <div class="status" v-for="(item, i) of status" :key="item.time.toLocaleTimeString()">
+          <div class="text">
+            {{ item.text }}
           </div>
-        </v-slide-y-transition>
+          <div class="time">
+            {{ item.time.toLocaleTimeString("zh-TW", { hour12: false }) }}
+          </div>
+        </div>
       </div>
-    </div>
+    </v-card>
   </div>
 </template>
 <style lang="sass" scoped>
