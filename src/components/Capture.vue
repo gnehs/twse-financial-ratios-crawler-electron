@@ -26,6 +26,14 @@ const results = ref({})
 const doneCount = ref(0)
 const errorMessage = ref(null)
 const progress = computed(() => (doneCount.value / (captureList.value.length * Math.ceil(period.value / 3) * 5 * 10) * 100).toFixed(2))
+// 剩餘時間
+const remainingTime = computed(() => {
+  const time = (captureList.value.length * Math.ceil(period.value / 3) * 5 * 10 - doneCount.value) * 0.1
+  const hour = Math.floor(time / 3600)
+  const minute = Math.floor((time - hour * 3600) / 60)
+  const second = Math.floor(time - hour * 3600 - minute * 60)
+  return `${hour ? `${hour} 小時` : ''}${minute ? ` ${minute} 分鐘` : ''}${second ? ` ${second} 秒` : ''}`
+})
 function parseYear(year) {
   return parseInt(year.toString().replace('年度', '')) + (useCommonEra.value ? 1911 : 0)
 }
@@ -260,8 +268,11 @@ onMounted(() => {
       captureList: <br />{{ captureList }}
       errorMessage: <br /> {{ errorMessage }}
     </v-alert>
-    <div class="text-center" v-else>
-      <div class="progress">{{ progress }}%</div>
+    <div v-else>
+      <div class="d-flex justify-space-between align-end">
+        <div class="progress">{{ progress }}%</div>
+        <div class="text-right text-caption">剩餘時間<br />{{ remainingTime }}</div>
+      </div>
       <v-progress-linear color="primary" :model-value="progress" class="my-2" />
       <div style="height: 80px">
         <v-slide-y-transition
