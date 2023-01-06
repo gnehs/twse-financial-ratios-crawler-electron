@@ -1,7 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useStepStore } from '@/stores/step'
-import * as XLSX from 'xlsx'
 import { useFormStore } from '@/stores/form'
 const stepStore = useStepStore()
 const formStore = useFormStore()
@@ -10,7 +9,7 @@ const { fileLink } = storeToRefs(formStore)
 function dowaload() {
   let link = document.createElement('a');
   link.href = fileLink.value;
-  link.download = `財務比率_證交所財務比率擷取工具_${new Date().toLocaleString()}.xlsx`;
+  link.download = `財務比率_${new Date().toLocaleString()}.xlsx`;
   link.click();
 }
 </script>
@@ -21,15 +20,15 @@ function dowaload() {
     </template>
 
     <template v-slot:text>
-      擷取完成，請點選下方按鈕下載 Excel 檔案。
+      擷取完成，請點選下方按鈕儲存 Excel 檔案。
     </template>
     <v-card-actions>
       <v-btn color="primary" prepend-icon="mdi-arrow-left" @click="step = 'GettingStarted'">
         再來一次
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn variant="tonal" color="primary" append-icon="mdi-download" @click="dowaload">
-        下載
+      <v-btn variant="tonal" color="primary" append-icon="mdi-content-save-outline" @click="dowaload">
+        儲存檔案
       </v-btn>
     </v-card-actions>
 
