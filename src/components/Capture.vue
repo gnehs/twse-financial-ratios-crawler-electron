@@ -282,8 +282,8 @@ errorMessage:
         <div class="text-right text-caption">剩餘時間<br />{{ remainingTime|| '即將完成' }}</div>
       </div>
       <v-progress-linear color="primary" :model-value="progress" class="my-2" />
-      <div style="height: 110px">
-        <div class="status" v-for="(item, i) of status" :key="item.time.toLocaleTimeString()">
+      <div class="status-items">
+        <div class="status" v-for="item of status">
           <div class="text">
             {{ item.text }}
           </div>
@@ -299,6 +299,25 @@ errorMessage:
 .progress
   font-size: 36px
   text-align: right
+.status-items
+  height: 110px
+  overflow-y: auto
+  &::-webkit-scrollbar
+    width: 0
+    height: 0
+  &::-webkit-scrollbar-track
+    background: transparent
+  &::-webkit-scrollbar-thumb
+    background: transparent
+  &:hover
+    padding-right: 4px
+    &::-webkit-scrollbar
+      width: 4px
+      height: 4px
+    &::-webkit-scrollbar-track
+      background: #ddd
+    &::-webkit-scrollbar-thumb
+      background: #aaa
 .status
   font-size: 12px
   margin-top: 4px
