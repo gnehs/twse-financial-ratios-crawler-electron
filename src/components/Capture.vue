@@ -278,7 +278,7 @@ errorMessage:
       </pre>
       <v-btn color="primary" @click="capture">重試</v-btn>
     </v-alert>
-    <v-card class="pa-4" v-else>
+    <v-card class="pa-4 my-4" v-else>
       <div class="d-flex justify-space-between align-end">
         <div class="progress">{{ progress }}%</div>
         <div class="text-right text-caption">剩餘時間<br />{{ remainingTime|| '即將完成' }}</div>
