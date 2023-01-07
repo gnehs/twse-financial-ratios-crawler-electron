@@ -260,6 +260,9 @@ async function capture() {
 onMounted(() => {
   capture()
 })
+function reload() {
+  window.location.reload()
+}
 </script>
 <template>
   <div style="width: calc(100vw - 32px);max-width: 512px;">
@@ -276,7 +279,7 @@ captureList:
 errorMessage:
 {{ errorMessage }}
       </pre>
-      <v-btn color="primary" @click="capture">重試</v-btn>
+      <v-btn color="primary" @click="reload">重試</v-btn>
     </v-alert>
     <v-card class="pa-4 my-4" v-else>
       <div class="d-flex justify-space-between align-end">
