@@ -34,7 +34,7 @@ checkUpdate()
 
     <v-card>
       <v-card-title>
-        有可用的軟體更新 (v{{ version }})
+        有可用的軟體更新 (v{{ latestVersion?.tag_name }})
       </v-card-title>
       <v-card-text>
         請點選下方的連結下載最新版本
