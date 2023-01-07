@@ -93,7 +93,7 @@ async function fetchFinancialReport(code, year) {
 function log(text) {
   console.log(text)
   let status_value = [{ time: new Date(), text }, ...status.value]
-  status.value = status_value.slice(0, 5)
+  status.value = status_value
 }
 async function getResult(code, name) {
   let res = await fetchFinancialReport(code)
@@ -140,9 +140,9 @@ async function capture() {
       try {
         results.value[code] = await getResult(code, name)
         done = true
-        log(`已擷取 ${code} ${name}`)
+        log(`已擷取 ${name}`)
       } catch (e) {
-        log(`擷取 ${code} ${name} 失敗，正在重試⋯`)
+        log(`擷取 ${name} 失敗，正在重試⋯`)
         retryCount++
         doneCount.value -= 50
       }
@@ -188,7 +188,7 @@ async function capture() {
       result.push([rate])
       result.push([`年度`, ...years])
       for (let { code, name } of targetList.value) {
-        let row = [`${code} ${name}`]
+        let row = [name]
         for (let year of years) {
           try {
             row.push(parseFloat(results.value[code][year][rate]))
@@ -212,7 +212,7 @@ async function capture() {
     let sheet = XLSX.utils.aoa_to_sheet(result);
     XLSX.utils.book_append_sheet(workbook, sheet, '圖表資料');
     // 股票與平均
-    function jsonToSheet(json, code) {
+    function jsonToSheet(json, sheetName) {
       if (!json) return
       let headers = Object.keys(json[Object.keys(json)[0]])
       let data = []
@@ -233,13 +233,13 @@ async function capture() {
       }
 
       let sheet = XLSX.utils.aoa_to_sheet(data);
-      XLSX.utils.book_append_sheet(workbook, sheet, code.toString());
+      XLSX.utils.book_append_sheet(workbook, sheet, sheetName);
     }
 
     jsonToSheet(average, '平均')
 
     for (let { code, name } of captureList.value) {
-      jsonToSheet(results.value[code], `${code} ${name}`)
+      jsonToSheet(results.value[code], name)
     }
 
     function s2ab(s) {

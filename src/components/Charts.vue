@@ -49,7 +49,7 @@ const charts = ref(
           data: Object.values(results.value['平均']).map(x => x[rate])
         },
         ...targetList.value.map(({ code, name }) => ({
-          name: `${code} ${name}`,
+          name,
           data: Object.values(results.value[code]).map(x => x[rate])
         }))
       ]

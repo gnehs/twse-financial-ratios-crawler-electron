@@ -24,7 +24,7 @@ async function getData() {
   try {
     let res = await nodeFetch('https://openapi.twse.com.tw/v1/opendata/t187ap03_L').then(res => res.json())
     stockList.value = res.map(item => ({
-      name: item[`公司簡稱`],
+      name: `${item[`公司代號`]} ${item[`公司簡稱`]}`,
       code: item[`公司代號`],
       category: item[`產業別`],
     }))
@@ -81,34 +81,28 @@ function next() {
         <div class="text-body mb-2">
           選擇目標，將會在匯出的資料中顯示所選之目標組合與產業平均
         </div>
-        <v-autocomplete
+        <v-combobox
           v-model="targetList"
           :items="stockList"
           chips
           closable-chips
-          item-title="code"
+          item-title="name"
           item-value="code"
           label="目標股票"
           return-object
           multiple
           variant="filled">
-          <template v-slot:chip="{ props, item }">
-            <v-chip v-bind="props" :text="`${item?.raw?.code} ${item?.raw?.name}`"></v-chip>
-          </template>
-          <template v-slot:item="{ props, item }">
-            <v-list-item v-bind="props" :title="item?.raw?.code" :subtitle="item?.raw?.name"></v-list-item>
-          </template>
-        </v-autocomplete>
+        </v-combobox>
 
 
         <div class="text-h6 mt-2">產業</div>
         <div class="text-body mb-2">
           選擇要擷取的產業，將會在匯出的資料中顯示所選產業之產業平均
         </div>
-        <v-radio-group v-model="targetCatgory">
+        <v-radio-group v-model="targetCatgory" v-if="recommendCategoryList.length">
           <v-radio v-for="item of recommendCategoryList" :label="item.name" :value="item.value"></v-radio>
-          <v-radio v-if="!recommendCategoryList.length" label="請先選擇目標股票" :value="null" disabled></v-radio>
         </v-radio-group>
+        <v-alert class="mb-4" v-else text="請先選擇目標股票" color="gray"></v-alert>
 
         <div class="text-body mb-2" v-if="targetCatgoryList.length">
           將會擷取下列股票來計算產業平均
@@ -116,7 +110,7 @@ function next() {
         <v-chip
           class="mr-1 mb-2"
           v-for="item of targetCatgoryList">
-          {{ item.code }} {{ item.name }}
+          {{ item.name }}
         </v-chip>
 
         <div class="text-h6 mt-2">擷取期間</div>
