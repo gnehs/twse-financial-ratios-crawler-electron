@@ -40,6 +40,11 @@ ipcRenderer.on('main-process-message', (_event, args) => {
           <video controls muted autoplay loop style="width: 100%;border-radius: 16px;">
             <source src="/preview.mp4" type="video/mp4">
           </video>
+          <div class="text-h6">相關連結</div>
+          <ul>
+            <li><a href="https://github.com/gnehs/twse-financial-ratios-crawler-electron" target="_blank">GitHub</a></li>
+            <li><a href="https://github.com/gnehs/twse-financial-ratios-crawler-electron/blob/main/privacy.md" target="_blank">隱私權政策</a></li>
+          </ul>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
