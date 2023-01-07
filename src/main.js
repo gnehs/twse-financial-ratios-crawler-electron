@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import VueApexCharts from "vue3-apexcharts";
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import "./style.sass"
 import App from './App.vue'
 
