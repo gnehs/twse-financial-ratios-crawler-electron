@@ -133,6 +133,7 @@ function add(num1, num2) {
 }
 
 async function capture() {
+  errorMessage.value = ''
   for (let { name, code } of captureList.value) {
     let done = false
     let retryCount = 0
@@ -262,10 +263,10 @@ onMounted(() => {
 </script>
 <template>
   <div style="width: calc(100vw - 32px);max-width: 512px;">
-    <v-alert type="error" title="發生了錯誤！" v-if="errorMessage">
+    <v-alert class="my-4" type="error" title="發生了錯誤！" v-if="errorMessage">
       很抱歉發生了錯誤，請重新再試一次，若您持續發生此錯誤請提供下列錯誤資訊給開發者
       <br />
-      <pre>
+      <pre style="white-space: pre-wrap;">
 period:
 {{ period }}
 targetList:
@@ -275,6 +276,7 @@ captureList:
 errorMessage:
 {{ errorMessage }}
       </pre>
+      <v-btn color="primary" @click="capture">重試</v-btn>
     </v-alert>
     <v-card class="pa-4" v-else>
       <div class="d-flex justify-space-between align-end">
@@ -311,6 +313,7 @@ errorMessage:
     background: transparent
   &:hover
     padding-right: 4px
+    transition: padding-right 0.2s
     &::-webkit-scrollbar
       width: 4px
       height: 4px
