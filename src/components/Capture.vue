@@ -158,7 +158,7 @@ async function capture() {
         if (!average[year]) average[year] = {}
         for (let key in results.value[code][year]) {
           if (!average[year][key]) average[year][key] = []
-          if (results.value[code][year][key] != 'NA') average[year][key].push(results.value[code][year][key])
+          average[year][key].push(results.value[code][year][key])
         }
       }
     }
@@ -168,10 +168,12 @@ async function capture() {
         let sum = 0
         let count = 0
         if (len) {
-          average[year][key].map(x => parseFloat(x)).forEach(val => {
-            sum = add(sum, val)
-            count++
-          })
+          average[year][key]
+            .filter(x => !isNaN(x))
+            .map(x => parseFloat(x)).forEach(val => {
+              sum = add(sum, val)
+              count++
+            })
           average[year][key] = accDiv(sum, count).toFixed(2)
         } else {
           average[year][key] = 'NA'
