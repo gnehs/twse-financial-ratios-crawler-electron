@@ -234,6 +234,7 @@ async function capture() {
       }
 
       let sheet = XLSX.utils.aoa_to_sheet(data);
+      sheetName = sheetName.replace(/\\|\/|\?|\*|\[|\]/g, '')
       XLSX.utils.book_append_sheet(workbook, sheet, sheetName);
     }
 
