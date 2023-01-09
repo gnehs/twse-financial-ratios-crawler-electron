@@ -82,7 +82,8 @@ function next() {
           class="mr-1 mb-2"
           v-for="item of targetList"
           closable
-          @click:close="targetList = targetList.filter(x => x !== item)">
+          :key="item.code"
+          @click:close="targetList = targetList.filter(x => x.code !== item.code)">
           {{ item.name }}
         </v-chip>
         <v-btn block variant="tonal" color="primary" @click="targetStockDialog = true">
