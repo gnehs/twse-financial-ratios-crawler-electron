@@ -46,11 +46,11 @@ const charts = ref(
       series: [
         {
           name: '產業平均',
-          data: Object.values(results.value['平均']).map(x => x[rate])
+          data: Object.values(results.value['平均']).map(x => x[rate].replace(/\,/g, ''))
         },
         ...targetList.value.map(({ code, name }) => ({
           name,
-          data: Object.values(results.value[code]).map(x => x[rate])
+          data: Object.values(results.value[code]).map(x => x[rate].replace(/\,/g, ''))
         }))
       ]
     }

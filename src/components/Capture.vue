@@ -170,7 +170,7 @@ async function capture() {
         if (len) {
           average[year][key]
             .filter(x => !isNaN(x))
-            .map(x => parseFloat(x)).forEach(val => {
+            .map(x => parseFloat(x.replace(/\,/g, ''))).forEach(val => {
               sum = add(sum, val)
               count++
             })
@@ -194,7 +194,7 @@ async function capture() {
         let row = [name]
         for (let year of years) {
           try {
-            row.push(parseFloat(results.value[code][year][rate]))
+            row.push(parseFloat(results.value[code][year][rate].replace(/\,/g, '')))
           } catch (e) {
             row.push('NA')
           }
@@ -204,7 +204,7 @@ async function capture() {
       let row = [`產業平均`]
       for (let year of years) {
         try {
-          row.push(parseFloat(average[year][rate]))
+          row.push(parseFloat(average[year][rate].replace(/\,/g, '')))
         } catch (e) {
           row.push('NA')
         }
@@ -228,7 +228,7 @@ async function capture() {
         row = [key]
         for (let year in json) {
           if (json[year][key] !== 'NA')
-            row.push(parseFloat(json[year][key]))
+            row.push(parseFloat(json[year][key].replace(/\,/g, '')))
           else
             row.push(json[year][key])
         }
